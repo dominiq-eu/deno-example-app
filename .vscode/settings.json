@@ -1,0 +1,10 @@
+{
+    "prettier.endOfLine": "lf",
+    "prettier.packageManager": "yarn",
+    "prettier.tabWidth": 4,
+    "prettier.singleQuote": true,
+    "prettier.quoteProps": "preserve",
+    "prettier.disableLanguages": [
+        "TypeScript"
+    ]
+}

@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  deno:
+    image: ubuntu:18.04
+    restart: "no"
+    volumes:
+      - ./deno_linux_x64:/bin/deno
+      - ../src:/data
+    entrypoint: "/bin/deno --allow-read /data/mod.ts"
