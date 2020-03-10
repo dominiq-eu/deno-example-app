@@ -13,14 +13,13 @@ test(function Customer_parse() {
         'id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, lat: 0, long:00.0000,'
     ]
 
-    // .. and they shouldn't.
+    // .. and this shouldn't.
     const errStr = [
         '',
         'id: x-x-x-x-x, lat:0, long:0.2oo1',
         'id: x, lat:0, long:0'
     ]
 
-    //
     okStr.map(Customer.parse).map(res =>
         Result.caseOf(res)
             .ok(_ => succeed())

@@ -1,28 +1,40 @@
 /*
     main.ts
 
+    This program reads customer from a database file and outputs all Id's
+    that are in a specific range of the Future of voice HQ on stdout. Errors
+    will be reported on stderr.
 */
 import * as Coord from './Data/Coordinate.ts'
 import * as Customer from './Data/Customer.ts'
 import * as Result from './Data/Result.ts'
 import Pipe from './Data/Pipe.ts'
 
-// Future of voice coordinates
-const FovPos = Coord.create(52.493256, 13.446082)
+//
+//  Config
+//
+const Config = {
+    // Future of voice coordinates
+    fovPos: Coord.create(52.493256, 13.446082),
 
-// Invite all customers in this distance in km
-const CustomerInviteDistKM = 100 //km
+    // Invite all customers in this distance in km
+    customerInviteDistKM: 100, //km
 
-// Customer db file
-const filename = '/data/customers.txt'
+    // Customer db file
+    filename: '/data/customers.txt'
+}
 
-// Console log for use in a pipe.
-const log = (msg: string) => (obj: NonNullable<any>) => {
+//
+//  Helper
+//
+
+// Console log for use in a pipe. Logs a value/object and returns it.
+const log = (msg: string) => (obj: NonNullable<any>): NonNullable<any> => {
     console.log(msg, obj)
     return obj
 }
 
-const readFileContents = async (filename: string): Promise<String> => {
+const readFileAsString = async (filename: string): Promise<String> => {
     const blob = await Deno.readFile(filename)
     const filedata = new TextDecoder('utf-8').decode(blob)
     return filedata
@@ -30,58 +42,56 @@ const readFileContents = async (filename: string): Promise<String> => {
 
 const splitStringByNewlines = (s: string): Array<string> => s.split(/\r?\n/)
 
-const isInDistanceToInvite = (c: Customer.Customer): boolean =>
-    Coord.distance(FovPos, c.pos) <= CustomerInviteDistKM
+const isInDistanceToGetInvite = (c: Customer.Customer): boolean =>
+    Coord.distance(Config.fovPos, c.pos) <= Config.customerInviteDistKM
 
 const toId = (c: Customer.Customer): string => c.id
 
+//
+//  Main
+//
 const main = async () => {
     // Read the file, parse it line by line and create a list of results
     // containing the customer object or a reason of what went wrong.
-    const customerResultList = Pipe(await readFileContents(filename))
+    const customerResultList = Pipe(await readFileAsString(Config.filename))
         .andThen(splitStringByNewlines)
         .andThen(lines => lines.map(Customer.parse))
         .value()
 
     // Get all parse failures and create a list of error strings, why the
     // parsing went wrong.
-    const invalidCustomers: Array<string> = customerResultList
-        .filter(Result.isErr)
-        .map(Result.errReason)
+    const invalidCustomers: Array<string> = // FIXME: I don't like the
+        // type definition here. If you know a way to help the compiler to
+        // inferr the type correctly. Tell me or fix it. Or maybe typescript
+        // is not so smart as i'd like it to be. So we need to wait until
+        // they manage to get the type inferred correctly, in a future release.
+        //  ¯\_(ツ)_/¯
+        customerResultList.filter(Result.isErr).map(Result.errReason)
 
     // Transform the customer list to a sorted list of all customer id's we
     // want to invite.
-    const customerIdsToInvite: Array<string> = customerResultList
-        .filter(Result.isOk)
-        .map(Result.okValue)
-        .filter(isInDistanceToInvite)
-        .map(toId)
-        .sort()
+    const customerIdsToInvite: Array<string> = // Same here as above. But
+        // in general they make a very good job in taming JS with the TS
+        // type system. So kudos to the typescript team!  =)
+        // Anyway if there is anyone wants to write a compiler for fun for a
+        // functional subset of JS using Hindley-Milner, write me!  =D
+        customerResultList
+            .filter(Result.isOk)
+            .map(Result.okValue)
+            .filter(isInDistanceToGetInvite)
+            .map(toId)
+            .sort()
 
-    // Log the errors
+    // Log the errors to stderr. This makes it easy work with the
+    // shell output without any warning interfer.
     invalidCustomers.map(err => console.error('Warning:', err))
 
-    // Log customer id's to invite
+    // Print out the customers id's we want to invite
+    // seperated by newline.
     customerIdsToInvite.map(id => console.log(id))
+
+    // Exit and tell the shell that everything is ok.
+    Deno.exit(0)
 }
-
-// {
-//     const contents = await readFileContents('/data/customers.txt')
-//     const customerResultList = contents.split(/\r?\n/).map(Customer.parse)
-
-//     // Split into two lists, error and valid.
-//     const customerParseErrors = customerResultList.filter(Result.isErr)
-//     const customers = customerResultList.filter(Result.isOk).map(Result.okValue)
-//     const customerInviteIds = customers
-//         .filter(c => Coord.distance(FovPos, c.pos) <= CustomerInviteDistKM)
-//         .map(c => c.id)
-//         .sort()
-
-//     // log errors
-//     customerParseErrors.map(Result.errReason).map(log('Error'))
-
-//     // Log all customers to invite
-//     customerInviteIds.map(log('Customer:'))
-// }
 
 main()

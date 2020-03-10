@@ -24,12 +24,7 @@ export const Nothing = <T>(): Nothing<T> =>
     //
     ({ _type: 'MaybeNothing' })
 
-//
 // Return the Just value or the given default one.
-//
-// @param defaultValue This is the value returned if the maybe is a Nothing
-// @param maybe The maybe type to test against a Just or a Nothing
-//
 export const orDefault = <T>(defaultValue: T, maybe: Maybe<T>): T =>
     isJust(maybe) ? value(maybe) : defaultValue
 

@@ -24,7 +24,7 @@ export const Ok = <T>(value: T): Ok<T> => ({
 
 export const Err = (reason: string): Err => ({
     _type: 'ResultErrorType',
-    reason
+    reason: reason
 })
 
 //
