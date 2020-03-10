@@ -4,7 +4,7 @@
     Data type representing a customer.
 */
 import * as Coordinate from "./Coordinate.ts";
-import * as Maybe from "./Maybe.ts";
+import * as Result from "./Result.ts";
 import Pipe from "./Pipe.ts";
 
 interface Type {
@@ -44,7 +44,7 @@ const isIdValid = (id: any): id is string =>
 const isLatValid = (lat: any): lat is number => typeof lat === "number";
 const isLngValid = (lng: any): lng is number => typeof lng === "number";
 
-export const parse = (line: string): Maybe.Maybe<Customer> =>
+export const parse = (line: string): Result.Result<Customer> =>
   Pipe(line.match(regex))
     .andThen(found => found || [])
     .andThen(found => ({
@@ -55,7 +55,7 @@ export const parse = (line: string): Maybe.Maybe<Customer> =>
     )
     .andThen(({ id, lat, lng }) =>
       (isIdValid(id) && isLatValid(lat) && isLngValid(lng))
-        ? Maybe.Just(create(id, Coordinate.create(lat, lng)))
-        : Maybe.Nothing
+        ? Result.Ok(create(id, Coordinate.create(lat, lng)))
+        : Result.Err("Parse error: " + line)
     )
     .value();

@@ -7,12 +7,12 @@ interface Ok<T> {
     readonly value: T
 }
 
-interface Error {
+interface Err {
     readonly _type: "ResultErrorType"
     readonly reason: string
 }
 
-export type Result<T> = Ok<T> | Error
+export type Result<T> = Ok<T> | Err
 
 //
 //  Type constructor
@@ -20,7 +20,7 @@ export type Result<T> = Ok<T> | Error
 export const Ok = <T>(value: T): Ok<T> => //
     ({ _type: "ResultOkType", value: value })
 
-export const Error = (reason: string): Error => //
+export const Err = (reason: string): Err => //
     ({ _type: "ResultErrorType",  reason })
 
 //
@@ -40,13 +40,13 @@ interface MatchType<T> {
 export const match = <T>(result: Result<T>): MatchType<T> => ({
     ok: (fn) => {
         if (isOk(result)) {
-            fn(result.value)
+            fn(getOkValue(result))
         }
         return match(result)
     },
     error: (fn) => {
-        if (isError(result)) {
-            fn(result.reason)
+        if (isErr(result)) {
+            fn(getErrValue(result))
         }
         return match(result)
     }
@@ -55,8 +55,8 @@ export const match = <T>(result: Result<T>): MatchType<T> => ({
 export const isOk = <T>(result: Result<T>): result is Ok<T> =>
     (result._type === "ResultOkType");
 
-export const isError = <T>(result: Result<T>): result is Error =>
+export const isErr = <T>(result: Result<T>): result is Err =>
     !isOk(result);
 
-export const value = <T>(ok: Ok<T>): T => ok.value;
-export const reason = (error: Error): string => error.reason;
+export const okValue = <T>(ok: Ok<T>): T => ok.value;
+export const errReason = (error: Err): string => error.reason;
