@@ -1,3 +1,6 @@
+# docker-compose.yml
+# Experimental does not work. Was to lazy to make it work, because
+# the Makefile works so well. Feel free to make it work.
 version: '3'
 
 services:
