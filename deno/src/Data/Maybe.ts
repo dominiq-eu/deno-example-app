@@ -16,7 +16,7 @@ export type Maybe<T> = Just<T> | Nothing<T>
 //
 //  Type constructor
 //
-export const Just = <T>(value: NonNullable<T> ): Just<T> =>
+export const Just = <T>(value: NonNullable<T>): Just<T> =>
     //
     ({ _type: 'MaybeJust', value: value })
 
@@ -31,10 +31,7 @@ export const Nothing = <T>(): Nothing<T> =>
 // @param maybe The maybe type to test against a Just or a Nothing
 //
 export const orDefault = <T>(defaultValue: T, maybe: Maybe<T>): T =>
-    (isJust(maybe))
-        ? value(maybe)
-        : defaultValue
-
+    isJust(maybe) ? value(maybe) : defaultValue
 
 export const isJust = <T>(maybe: Maybe<T>): maybe is Just<T> =>
     maybe._type === 'MaybeJust'

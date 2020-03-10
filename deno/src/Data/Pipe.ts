@@ -9,8 +9,8 @@
 */
 
 const Pipe = (x: any) => ({
-  andThen: (fn: (x: any) => any) => Pipe(fn(x)),
-  value: () => x
-});
+    andThen: (fn: (x: any) => any) => Pipe(fn(x)),
+    value: () => x
+})
 
-export default Pipe;
+export default Pipe

@@ -6,5 +6,14 @@
 */
 
 // https://deno.land/std@v0.35.0/testing/asserts.ts?doc
-export { fail, assertEquals, assertNotEquals } from "https://deno.land/std@v0.35.0/testing/asserts.ts"
+export {
+    fail,
+    assert,
+    assertEquals,
+    assertNotEquals
+} from 'https://deno.land/std@v0.35.0/testing/asserts.ts'
+import { assert } from 'https://deno.land/std@v0.35.0/testing/asserts.ts'
 export const { test } = Deno
+
+// Helper
+export const succeed = (msg?: string) => assert(true, msg)
