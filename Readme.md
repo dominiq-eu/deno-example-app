@@ -6,10 +6,10 @@ This is an implementation of a program that reads the customers.txt file parse i
 
 The code is managed in a git repository. The language used is TypeScript and the interpreter is deno instead of node. It's a young project, but it's basically node.js with TypeScript build-in, an API similar to Go, a clever alternative to npm and package.json and everything in one binary.
 
-For more info about this project, I recommend you to watch the latest talks from Ryan Dahl (inventor from node.js):
+For more info about this project, I recommend you to watch the latest talks from Ryan Dahl (inventor from node.js) or go to the [website](https://deno.land):
 
--   https://www.youtube.com/watch?v=1gIiZfSbEAE
--   https://www.youtube.com/watch?v=HjdJzNoT_qg
+-   [Deno is a New Way to JavaScript - Ryan Dahl & Kitson Kelly](https://www.youtube.com/watch?v=1gIiZfSbEAE)
+-   [Ryan Dahl — Deno, a new way to JavaScript](https://www.youtube.com/watch?v=HjdJzNoT_qg)
 
 The dev environment is in an ubuntu container with the deno binary and the local cache linked in. The cache is not part of the repository, but after you run the program and|or the tests you find it at ./dev-env/cache.
 
