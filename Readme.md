@@ -11,13 +11,15 @@ For more info about this project, I recommend you to watch the latest talks from
 -   https://www.youtube.com/watch?v=1gIiZfSbEAE
 -   https://www.youtube.com/watch?v=HjdJzNoT_qg
 
+The dev environment is in an ubuntu container with the deno binary and the local cache linked in. The cache is not part of the repository, but after you run the program and|or the tests you find it at ./dev-env/cache.
+
 ## How to get it running
 
 The build/dev environment is based on Docker. This way you don't need to install anything in your local environment. Except for docker and a Unix shell environment, but that should be already on your development box anyway.
 
 **Dependencies**
 
--   Terminal
+-   Terminal with a Unix shell and environment (eg. Linux, MacOS Terminal, Git Bash on Windows)
 -   make
 -   Docker
 
