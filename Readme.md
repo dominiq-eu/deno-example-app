@@ -1,6 +1,6 @@
 # Readme
 
-This is an implementation of a program that reads the customers.txt file parse it and output every customer id in 100km distance of the Future of Voice HQ alphabetically sorted. Warnings are printed on stderr.
+This is an implementation of a program that reads the customers.txt file parse it and output every customer id in 100km distance of an imaginary HQ alphabetically sorted. Warnings are printed on stderr.
 
 ## How it's done
 

@@ -13,7 +13,7 @@ import Pipe from './Data/Pipe.ts'
 //  Config  //
 
 const Config = {
-    // Future of voice coordinates
+    // Coordinates of the headquater
     fovPos: Coord.create(52.493256, 13.446082),
 
     // Invite all customers in this distance in km
