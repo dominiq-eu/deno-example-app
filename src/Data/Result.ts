@@ -1,6 +1,14 @@
 /*
     Result.ts
+
+    Example:
+        const res = Result.Ok("Everything is good")
+        Result.caseOf(res)
+            .ok(value => console.log("Hooray", value))
+            .error(err => console.log("Oops:", err))
 */
+
+//  Type Definition  //
 
 interface Ok<T> {
     readonly _type: 'ResultOkType'
@@ -14,9 +22,8 @@ interface Err {
 
 export type Result<T> = Ok<T> | Err
 
-//
-//  Type constructor
-//
+//  Type constructor  //
+
 export const Ok = <T>(value: T): Ok<T> => ({
     _type: 'ResultOkType',
     value: value
@@ -27,19 +34,11 @@ export const Err = (reason: string): Err => ({
     reason: reason
 })
 
-//
-// CaseOf
-// @param result The result to match against an Ok or Error
-//
-// Code Sample:
-// const res = Result.Ok("Everything is good")
-// Result.caseOf(res)
-//       .ok(value => console.log("Hooray", value))
-//       .error(err => console.log("Oops:", err))
-//
+//  Type pattern matching  //
+
 interface CaseOfType<T> {
-    readonly ok: (fn: (val: T) => any) => CaseOfType<T>
-    readonly error: (fn: (err?: string) => any) => CaseOfType<T>
+    readonly ok: (fn: (val: T) => void) => CaseOfType<T>
+    readonly error: (fn: (err?: string) => void) => CaseOfType<T>
 }
 export const caseOf = <T>(result: Result<T>): CaseOfType<T> => ({
     ok: fn => {
@@ -56,10 +55,14 @@ export const caseOf = <T>(result: Result<T>): CaseOfType<T> => ({
     }
 })
 
+//  Helper  //
+
+export const okValue = <T>(ok: Ok<T>): T => ok.value
+export const errReason = (error: Err): string => error.reason
+
+//  Type guards  //
+
 export const isOk = <T>(result: Result<T>): result is Ok<T> =>
     result._type === 'ResultOkType'
 
 export const isErr = <T>(result: Result<T>): result is Err => !isOk(result)
-
-export const okValue = <T>(ok: Ok<T>): T => ok.value
-export const errReason = (error: Err): string => error.reason

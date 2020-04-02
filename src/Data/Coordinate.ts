@@ -10,20 +10,19 @@ export interface Coordinate {
     readonly lng: number
 }
 
-//
-//  Helper
-//
+//  Helper  //
+
 const toRadians = (x: number): number => (x * Math.PI) / 180
 const earthRadius = 6371.009 // Approximatly according to wolframalpha.com
 
-// Create a coordinate.
+/*  Create a coordinate.  */
 export const create = (latitude: number, longitude: number): Coordinate => ({
     _type: 'CoordinateType',
     lat: latitude,
     lng: longitude
 })
 
-// Calculates the distance between two geographic points.
+/*  Calculates the distance between two geographic points.  */
 export const distance = (p1: Coordinate, p2: Coordinate): number => {
     // Use the haversine forumla to calculate the distance
     // https://en.wikipedia.org/wiki/Great-circle_distance

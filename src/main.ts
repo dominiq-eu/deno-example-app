@@ -10,9 +10,8 @@ import * as Customer from './Data/Customer.ts'
 import * as Result from './Data/Result.ts'
 import Pipe from './Data/Pipe.ts'
 
-//
-//  Config
-//
+//  Config  //
+
 const Config = {
     // Future of voice coordinates
     fovPos: Coord.create(52.493256, 13.446082),
@@ -24,11 +23,9 @@ const Config = {
     filename: '/data/customers.txt'
 }
 
-//
-//  Helper
-//
+//  Helper  //
 
-// Console log for use in a pipe. Logs a value/object and returns it.
+/*  Console log for use in a pipe. Logs a value/object and returns it. */
 const log = (msg: string) => (obj: NonNullable<any>): NonNullable<any> => {
     console.log(msg, obj)
     return obj
@@ -42,45 +39,37 @@ const readFileAsString = async (filename: string): Promise<String> => {
 
 const splitStringByNewlines = (s: string): Array<string> => s.split(/\r?\n/)
 
+const parseLineByLineToCustomer = (txt: string): Result<Customer.Customer>[] =>
+    splitStringByNewlines(txt).map(Customer.parse)
+
 const isInDistanceToGetInvite = (c: Customer.Customer): boolean =>
     Coord.distance(Config.fovPos, c.pos) <= Config.customerInviteDistKM
 
 const toId = (c: Customer.Customer): string => c.id
 
-//
-//  Main
-//
+//  Main  //
+
 const main = async () => {
     // Read the file, parse it line by line and create a list of results
     // containing the customer object or a reason of what went wrong.
     const customerResultList = Pipe(await readFileAsString(Config.filename))
-        .andThen(splitStringByNewlines)
-        .andThen(lines => lines.map(Customer.parse))
+        .andThen(parseLineByLineToCustomer)
         .value()
 
     // Get all parse failures and create a list of error strings, why the
     // parsing went wrong.
-    const invalidCustomers: Array<string> = // FIXME: I don't like the
-        // type definition here. If you know a way to help the compiler to
-        // inferr the type correctly. Tell me or fix it. Or maybe typescript
-        // is not so smart as i'd like it to be. So we need to wait until
-        // they manage to get the type inferred correctly, in a future release.
-        //  ¯\_(ツ)_/¯
-        customerResultList.filter(Result.isErr).map(Result.errReason)
+    const invalidCustomers: Array<string> = customerResultList
+        .filter(Result.isErr)
+        .map(Result.errReason)
 
     // Transform the customer list to a sorted list of all customer id's we
     // want to invite.
-    const customerIdsToInvite: Array<string> = // Same here as above. But
-        // in general they make a very good job in taming JS with the TS
-        // type system. So kudos to the typescript team!  =)
-        // Anyway if there is anyone wants to write a compiler for fun for a
-        // functional subset of JS using Hindley-Milner, write me!  =D
-        customerResultList
-            .filter(Result.isOk)
-            .map(Result.okValue)
-            .filter(isInDistanceToGetInvite)
-            .map(toId)
-            .sort()
+    const customerIdsToInvite: Array<string> = customerResultList
+        .filter(Result.isOk)
+        .map(Result.okValue)
+        .filter(isInDistanceToGetInvite)
+        .map(toId)
+        .sort()
 
     // Log the errors to stderr. This makes it easy work with the
     // shell output without any warning interfer.
@@ -91,7 +80,7 @@ const main = async () => {
     customerIdsToInvite.map(id => console.log(id))
 
     // Exit and tell the shell that everything is ok.
-    Deno.exit(0)
+    // Deno.exit(0)
 }
 
 main()
