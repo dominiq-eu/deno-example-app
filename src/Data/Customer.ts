@@ -1,6 +1,9 @@
 /*
     Customer.ts
     Data type representing a customer.
+
+    FIXME: ID as UUID parsing
+    FIXME: Check if resulting id is UUID
 */
 
 import * as Coordinate from './Coordinate.ts'
@@ -17,7 +20,7 @@ export interface Customer {
 export const create = (id: string, pos: Coordinate.Coordinate): Customer => ({
     _type: 'CustomerType',
     id,
-    pos
+    pos,
 })
 
 const regex = /^id:\s*?([\w-]*?),\s*?lat:\s*?([\d.]*?),\s*?long:\s*?([\d.]*?),/
@@ -28,16 +31,16 @@ const isLatValid = (lat: NonNullable<any>): lat is number =>
 const isLngValid = (lng: NonNullable<any>): lng is number =>
     typeof lng === 'number'
 
-/*  Parse a string to a customer object in the format:
+/*  Parse a string to a customer object in the format of:
     "id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, lat: x, long: x"
 */
 export const parse = (line: string): Result.Result<Customer> =>
     Pipe(line.match(regex))
-        .andThen(found => found || [])
-        .andThen(found => ({
+        .andThen((found) => found || [])
+        .andThen((found) => ({
             id: found[1],
             lat: Number.parseFloat(found[2]),
-            lng: Number.parseFloat(found[3])
+            lng: Number.parseFloat(found[3]),
         }))
         .andThen(({ id, lat, lng }) =>
             isIdValid(id) && isLatValid(lat) && isLngValid(lng)

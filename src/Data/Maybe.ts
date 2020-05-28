@@ -1,8 +1,17 @@
 /*
-    Maybe.ts
+    Maybe
+
+    This is a Maybe type implementation. It holds a value or Nothing. You
+    can ask the type about that and provide a default value if there isn't
+    one. Functions that may or may not return a value use this type. It's a
+    concept from the functional world to prevent the use of null.
+
+    For reference:
+    https://en.wikipedia.org/wiki/Option_type
 */
 
 //  Type Definition  //
+
 interface Just<T> {
     readonly _type: 'MaybeJust'
     readonly value: T
@@ -16,13 +25,12 @@ export type Maybe<T> = Just<T> | Nothing<T>
 
 //  Type constructors  //
 
-export const Just = <T>(value: NonNullable<T>): Just<T> =>
-    //
-    ({ _type: 'MaybeJust', value: value })
+export const Just = <T>(value: NonNullable<T>): Just<T> => ({
+    _type: 'MaybeJust',
+    value: value,
+})
 
-export const Nothing = <T>(): Nothing<T> =>
-    //
-    ({ _type: 'MaybeNothing' })
+export const Nothing = <T>(): Nothing<T> => ({ _type: 'MaybeNothing' })
 
 //  Helper  //
 

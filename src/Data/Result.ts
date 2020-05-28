@@ -1,5 +1,5 @@
 /*
-    Result.ts
+    Result
 
     Example:
         const res = Result.Ok("Everything is good")
@@ -26,12 +26,12 @@ export type Result<T> = Ok<T> | Err
 
 export const Ok = <T>(value: T): Ok<T> => ({
     _type: 'ResultOkType',
-    value: value
+    value: value,
 })
 
 export const Err = (reason: string): Err => ({
     _type: 'ResultErrorType',
-    reason: reason
+    reason: reason,
 })
 
 //  Type pattern matching  //
@@ -41,18 +41,18 @@ interface CaseOfType<T> {
     readonly error: (fn: (err?: string) => void) => CaseOfType<T>
 }
 export const caseOf = <T>(result: Result<T>): CaseOfType<T> => ({
-    ok: fn => {
+    ok: (fn) => {
         if (isOk(result)) {
             fn(okValue(result))
         }
         return caseOf(result)
     },
-    error: fn => {
+    error: (fn) => {
         if (isErr(result)) {
             fn(errReason(result))
         }
         return caseOf(result)
-    }
+    },
 })
 
 //  Helper  //
@@ -65,4 +65,5 @@ export const errReason = (error: Err): string => error.reason
 export const isOk = <T>(result: Result<T>): result is Ok<T> =>
     result._type === 'ResultOkType'
 
-export const isErr = <T>(result: Result<T>): result is Err => !isOk(result)
+export const isErr = <T>(result: Result<T>): result is Err =>
+    result._type === 'ResultErrorType'

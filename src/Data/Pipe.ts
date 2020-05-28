@@ -10,7 +10,7 @@
 
 const Pipe = (x: any) => ({
     andThen: (fn: (x: any) => any) => Pipe(fn(x)),
-    value: () => x
+    value: () => x,
 })
 
 export default Pipe

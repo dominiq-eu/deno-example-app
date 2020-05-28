@@ -2,7 +2,7 @@
     main.ts
 
     This program reads customer from a database file and outputs all Id's
-    that are in a specific range of the Future of voice HQ on stdout. Errors
+    that are in a specific range of the company HQ on stdout. Errors
     will be reported on stderr.
 */
 import * as Coord from './Data/Coordinate.ts'
@@ -20,7 +20,7 @@ const Config = {
     customerInviteDistKM: 100, //km
 
     // Customer db file
-    filename: '/data/customers.txt'
+    filename: '/data/customers.txt',
 }
 
 //  Helper  //
@@ -73,11 +73,11 @@ const main = async () => {
 
     // Log the errors to stderr. This makes it easy work with the
     // shell output without any warning interfer.
-    invalidCustomers.map(err => console.error('Warning:', err))
+    invalidCustomers.map((err) => console.error('Warning:', err))
 
     // Print out the customers id's we want to invite
     // seperated by newline.
-    customerIdsToInvite.map(id => console.log(id))
+    customerIdsToInvite.map((id) => console.log(id))
 
     // Exit and tell the shell that everything is ok.
     // Deno.exit(0)
